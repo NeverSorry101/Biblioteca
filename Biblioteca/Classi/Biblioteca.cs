@@ -5,12 +5,14 @@ using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Biblioteca
+namespace Biblioteca_db_manager.Classi
 {
     internal class Biblioteca
     {
-        public string? Nome { get; set; } = String.Empty;
+        public string? Nome { get; set; } = string.Empty;
         public List<MediaItem> Catalogo { get; set; }
+
+        public string? Indirizzo { get; set; } = string.Empty;
 
         public void AggiungiItem(MediaItem item)
         {
@@ -22,7 +24,8 @@ namespace Biblioteca
             Catalogo.Remove(item);
         }
 
-        public Biblioteca() { 
+        public Biblioteca()
+        {
         }
     }
 }
