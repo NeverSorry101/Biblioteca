@@ -21,5 +21,10 @@ namespace Biblioteca_db_manager.Classi
         {
             Insert , Delete , Prestito , Consegna
         }
+
+        public enum Tipo
+        {
+            MediaItems , Libri , Ebooks , Audiobooks
+        }
     }
 }

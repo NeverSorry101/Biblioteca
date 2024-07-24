@@ -14,15 +14,6 @@ namespace Biblioteca_db_manager.Classi
 
         public string? Indirizzo { get; set; } = string.Empty;
 
-        public void AggiungiItem(MediaItem item)
-        {
-            Catalogo.Add(item);
-        }
-
-        public void RimuoviItem(MediaItem item)
-        {
-            Catalogo.Remove(item);
-        }
 
         public Biblioteca()
         {

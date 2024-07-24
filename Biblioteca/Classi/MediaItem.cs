@@ -31,10 +31,7 @@ namespace Biblioteca_db_manager.Classi
             DataDiRestituzione = datadiconsegna;
         }
 
-        public virtual void GetDescrizione()
-        {
-            Console.WriteLine($"Titolo: {Titolo,-15}\nAutore {Autore,-15}");
-        }
+
 
        
     }

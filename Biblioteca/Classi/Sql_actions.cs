@@ -3,7 +3,7 @@ using Biblioteca_db_manager.Interfacce;
 using System.Data.SqlClient;
 namespace Biblioteca_db_manager
 {
-    internal class Sql_actions : IMediaAction
+    internal class Sql_actions: IMediaAction
     {
         private static string connectionString = "Server=V-SQLSRV01;Database=_Minisini;User Id=minidevelopment;Password=minidevelopment;";
         public static void CreateBiblioteca()
@@ -249,7 +249,7 @@ namespace Biblioteca_db_manager
             }
 
         }
-        public static void Update(int id_item , Libro item)
+        public static void Update(int id_item, Libro item)
         {
             SqlConnection connection = new SqlConnection(connectionString);
             using (connection)
@@ -274,6 +274,155 @@ namespace Biblioteca_db_manager
                     tran.Rollback();
                     Console.WriteLine($"Error: {ex.Message}");
                 }
+            }
+        }
+        public static void Update(int id_item, Ebook item)
+        {
+            SqlConnection connection = new SqlConnection(connectionString);
+            using (connection)
+            {
+                connection.Open();
+                SqlTransaction tran = connection.BeginTransaction();
+                try
+                {
+                    string query1 = $"UPDATE  MediaItems SET   Titolo = '{item.Titolo}', Autore = '{item.Autore}',Status = '{item.Status}', DataDiPrestito = '{item.DataDiPrestito}' , DataDiRestituzione = '{item.DataDiRestituzione}' WHERE id = {id_item} ";
+                    SqlCommand command1 = new SqlCommand(query1, connection);
+                    command1.Transaction = tran;
+                    var id = command1.ExecuteNonQuery();
+                    string query2 = $"UPDATE  Ebook SET '{id}', formatofile = '{item.FormatoFile}', Dimensionefile = '{item.DimensioneFile}' WHERE id = {id_item}";
+                    SqlCommand command2 = new SqlCommand(query2, connection);
+                    command2.Transaction = tran;
+                    command2.ExecuteNonQuery();
+                    tran.Commit();
+                    Console.WriteLine("Inserito con successo\n");
+                }
+                catch (Exception ex)
+                {
+                    tran.Rollback();
+                    Console.WriteLine($"Error: {ex.Message}");
+                }
+            }
+
+        }
+        public static void Update(int id_item, Audiobook item)
+        {
+            SqlConnection connection = new SqlConnection(connectionString);
+            using (connection)
+            {
+                connection.Open();
+                SqlTransaction tran = connection.BeginTransaction();
+                try
+                {
+                    string query1 = $"UPDATE  MediaItems SET   Titolo = '{item.Titolo}', Autore = '{item.Autore}',Status = '{item.Status}', DataDiPrestito = '{item.DataDiPrestito}' , DataDiRestituzione = '{item.DataDiRestituzione}' WHERE id = {id_item} ";
+                    SqlCommand command1 = new SqlCommand(query1, connection);
+                    command1.Transaction = tran;
+                    var id = command1.ExecuteNonQuery();
+                    string query2 = $"UPDATE  Ebook SET '{id}', durata = '{item.Durata}', Narratore = '{item.Narratore}' WHERE id = {id_item}";
+                    SqlCommand command2 = new SqlCommand(query2, connection);
+                    command2.Transaction = tran;
+                    command2.ExecuteNonQuery();
+                    tran.Commit();
+                    Console.WriteLine("Inserito con successo\n");
+                }
+                catch (Exception ex)
+                {
+                    tran.Rollback();
+                    Console.WriteLine($"Error: {ex.Message}");
+                }
+            }
+        }
+        public static void Delete(int id_item, Enumeratori.Tipo tipo)
+        {
+
+            SqlConnection connection = new SqlConnection(connectionString);
+            using (connection)
+            {
+                connection.Open();
+                SqlTransaction tran = connection.BeginTransaction();
+                try
+                {
+                    string query = $"DELETE FROM MediaItems where id = {id_item}";
+                    SqlCommand command = new SqlCommand(query, connection);
+                    command.Transaction = tran;
+                    command.ExecuteNonQuery();
+
+                    if (tipo != Enumeratori.Tipo.MediaItems)
+                    {
+                        string query2 = $"DELETE FROM {Enum.GetName(typeof(Enumeratori.Tipo), tipo)} where id = {id_item}";
+                        SqlCommand command2 = new SqlCommand(query2, connection);
+                        command2.Transaction = tran;
+                        command2.ExecuteNonQuery();
+                    }
+
+                    tran.Commit();
+                    Console.WriteLine("Elemento eliminato con successo\n");
+                }
+                catch (Exception ex)
+                {
+                    tran.Rollback();
+                    Console.WriteLine("Error: " + ex.Message);
+                }
+            }
+        }
+        public static void GetInfo(int id_item, Enumeratori.Tipo tipo)
+        {
+            SqlConnection conn = new SqlConnection(connectionString);
+            using (conn)
+            {
+                conn.Open();
+                SqlTransaction tran = conn.BeginTransaction();
+                try
+                {
+                    string query = $"SELECT*FROM MediaItems as m Inner join {Enum.GetName(typeof(Enumeratori.Tipo), tipo)} as s ON s.id = m.id WHERE s.id = {id_item}";
+                    SqlCommand command = new SqlCommand(query, conn);
+                    command.Transaction = tran;
+                    SqlDataReader reader = command.ExecuteReader();
+                    for (int i = 0; i < reader.FieldCount; i++) if (i != 6) Console.Write($"{reader.GetName(i),-27}");
+                    Console.Write("\n");
+                    while (reader.Read())
+                    {
+                        for (int i = 0; i < reader.FieldCount; i++) if (i != 6) Console.Write($"{reader.GetValue(i),-27}");
+                        Console.Write("\n");
+                    }
+                    reader.Close();
+                    tran.Commit();
+                }
+                catch (Exception ex) { 
+                    tran.Rollback();
+                    Console.WriteLine(ex.Message);  
+                }
+                
+            }
+        }
+        public static void ShowItems( Enumeratori.Tipo tipo)
+        {
+            SqlConnection conn = new SqlConnection(connectionString);
+            using (conn)
+            {
+                conn.Open();
+                SqlTransaction tran = conn.BeginTransaction();
+                try
+                {
+                    string query = $"SELECT*FROM MediaItems as m Inner join {Enum.GetName(typeof(Enumeratori.Tipo), tipo)} as s ON s.id = m.id ";
+                    SqlCommand command = new SqlCommand(query, conn);
+                    command.Transaction = tran;
+                    SqlDataReader reader = command.ExecuteReader();
+                    for (int i = 0; i < reader.FieldCount; i++) if (i != 6) Console.Write($"{reader.GetName(i),-27}");
+                    Console.Write("\n");
+                    while (reader.Read())
+                    {
+                        for (int i = 0; i < reader.FieldCount; i++) if (i != 6) Console.Write($"{reader.GetValue(i),-27}");
+                        Console.Write("\n");
+                    }
+                    reader.Close();
+                    tran.Commit();
+                }
+                catch (Exception ex)
+                {
+                    tran.Rollback();
+                    Console.WriteLine(ex.Message);
+                }
+
             }
         }
     }

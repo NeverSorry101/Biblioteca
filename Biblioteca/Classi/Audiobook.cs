@@ -21,10 +21,5 @@ namespace Biblioteca_db_manager
             Narratore = narratore;
         }
 
-        public override void GetDescrizione()
-        {
-            base.GetDescrizione();
-            Console.WriteLine($"Durata: {Durata,-15}\nNarratore: {Narratore,-15}");
-        }
     }
 }

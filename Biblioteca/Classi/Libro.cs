@@ -22,15 +22,5 @@ namespace Biblioteca_db_manager.Classi
             Genere = genere;
         }
 
-        public override void GetDescrizione()
-        {
-            base.GetDescrizione();
-            Console.WriteLine($"ISBN: {ISBN,-15}\nGenere: {Genere,-15}\nAnno: {Anno,-15}");
-        }
-
-        public static  void Insert()
-        {
-
-        }
     }
 }

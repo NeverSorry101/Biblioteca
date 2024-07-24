@@ -21,11 +21,6 @@ namespace Biblioteca_db_manager.Classi
         }
 
 
-        public override void GetDescrizione()
-        {
-            base.GetDescrizione();
-            Console.WriteLine($"Formato file: {FormatoFile,-15}\nDimensione file: {DimensioneFile,-15}");
-        }
 
     }
 
