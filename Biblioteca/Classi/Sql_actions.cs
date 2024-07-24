@@ -6,7 +6,6 @@ namespace Biblioteca_db_manager
     internal class Sql_actions : IMediaAction
     {
         private static string connectionString = "Server=V-SQLSRV01;Database=_Minisini;User Id=minidevelopment;Password=minidevelopment;";
-
         public static void CreateBiblioteca()
         {
             SqlConnection connection = new SqlConnection(connectionString);
@@ -84,7 +83,7 @@ namespace Biblioteca_db_manager
                     SqlDataReader reader = command1.ExecuteReader();
                     if (Convert.ToInt32(reader.GetValue(0)) == 0)
                     {
-                        string query2 = $"UPDATE MediaItems SET Status = 1 , datadiprestito = '{int.Now}'";
+                        string query2 = $"UPDATE MediaItems SET Status = 1 , datadiprestito = '{DateTime.Now}'";
                         SqlCommand command2 = new SqlCommand(query2, connection);
                         command2.ExecuteNonQuery();
                         tran.Commit();
@@ -145,7 +144,7 @@ namespace Biblioteca_db_manager
                     SqlDataReader reader = command1.ExecuteReader();
                     if (Convert.ToInt32(reader.GetValue(0)) == 1)
                     {
-                        string query2 = $"UPDATE MediaItems SET Status = 0 , datadirestituzione = '{int.Now}'";
+                        string query2 = $"UPDATE MediaItems SET Status = 0 , datadirestituzione = '{DateTime.Now}'";
                         SqlCommand command2 = new SqlCommand(query2, connection);
                         command2.ExecuteNonQuery();
                         tran.Commit();
@@ -250,7 +249,32 @@ namespace Biblioteca_db_manager
             }
 
         }
-
-
+        public static void Update(int id_item , Libro item)
+        {
+            SqlConnection connection = new SqlConnection(connectionString);
+            using (connection)
+            {
+                connection.Open();
+                SqlTransaction tran = connection.BeginTransaction();
+                try
+                {
+                    string query1 = $"UPDATE  MediaItems SET   Titolo = '{item.Titolo}', Autore = '{item.Autore}',Status = '{item.Status}', DataDiPresti = '{item.DataDiPrestito}' , DataDiPrestito = '{item.DataDiRestituzione}' WHERE id = {id_item} ";
+                    SqlCommand command1 = new SqlCommand(query1, connection);
+                    command1.Transaction = tran;
+                    var id = command1.ExecuteNonQuery();
+                    string query2 = $"UPDATE  Libri SET '{id}', Anno = '{item.Anno}', ISBN = '{item.ISBN}', Genere = '{item.Genere}' WHERE id = {id_item}";
+                    SqlCommand command2 = new SqlCommand(query2, connection);
+                    command2.Transaction = tran;
+                    command2.ExecuteNonQuery();
+                    tran.Commit();
+                    Console.WriteLine("Inserito con successo\n");
+                }
+                catch (Exception ex)
+                {
+                    tran.Rollback();
+                    Console.WriteLine($"Error: {ex.Message}");
+                }
+            }
+        }
     }
 }
